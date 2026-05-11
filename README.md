@@ -1,66 +1,16 @@
-## Foundry
+# Project Overview
 
-**Foundry is a blazing fast, portable and modular toolkit for Ethereum application development written in Rust.**
+This project is a bachelor thesis: "Design and Development of an EIP-7702 User Wallet for International Financial Operations". 
 
-Foundry consists of:
+A non-custodial EVM smart contract wallet utilizing **EIP-7702** to temporarily delegate standard EOAs to a fully functional smart account implementation. 
 
-- **Forge**: Ethereum testing framework (like Truffle, Hardhat and DappTools).
-- **Cast**: Swiss army knife for interacting with EVM smart contracts, sending transactions and getting chain data.
-- **Anvil**: Local Ethereum node, akin to Ganache, Hardhat Network.
-- **Chisel**: Fast, utilitarian, and verbose solidity REPL.
+## Core Authorization Features
+1. **Passkeys (WebAuthn/FIDO2):** Replaces the seed phrase. Leverages device secure modules (biometrics). Because standard `secp256r1` verification on-chain costs $\approx 330,000$ gas, we prioritize the new RIP-7212 precompile ($3,450$ gas), falling back to Daimo's FCL library otherwise.
+2. **Session Keys:** Ephemeral `secp256k1` keys stored in the delegated EOA's storage. They bypass Passkey checks to allow highly scoped permissions (time limits, specific DApp targets, function selectors, or value limits) for seamless UX without repeated signing.
 
-## Documentation
+## Business features
+1. **Batch transactions:** By bundling several related financial steps into a single array of calls, the wallet drastically cuts down on overlapping base network fees. This lowers the overhead for complex workflows, such as approving token movement and immediately forwarding that capital.
+2. **Gas sponsorship:** The contract architecture and especially session keys allow wallet to be gas sponsorship-compatible.
 
-https://book.getfoundry.sh/
-
-## Usage
-
-### Build
-
-```shell
-$ forge build
-```
-
-### Test
-
-```shell
-$ forge test
-```
-
-### Format
-
-```shell
-$ forge fmt
-```
-
-### Gas Snapshots
-
-```shell
-$ forge snapshot
-```
-
-### Anvil
-
-```shell
-$ anvil
-```
-
-### Deploy
-
-```shell
-$ forge script script/Counter.s.sol:CounterScript --rpc-url <your_rpc_url> --private-key <your_private_key>
-```
-
-### Cast
-
-```shell
-$ cast <subcommand>
-```
-
-### Help
-
-```shell
-$ forge --help
-$ anvil --help
-$ cast --help
-```
+## Architecture
+The entire technical specification, including interfaces, storage layout, system flow, and security vectors, is defined in `ARCHITECTURE.md`.
